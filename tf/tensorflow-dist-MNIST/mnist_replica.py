@@ -1,5 +1,6 @@
 # SOURCE: https://raw.githubusercontent.com/tensorflow/tensorflow/master/tensorflow/tools/dist_test/python/mnist_replica.py
 # minor changes: Ronald Cotton <ronald.cotton@wsu.edu>
+# TODO: need to add the number of hidden layers to the model
 #
 # Copyright 2016 The TensorFlow Authors. All Rights Reserved.
 #

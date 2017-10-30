@@ -31,20 +31,15 @@ sudo docker build -t tensorflow-dist-MNIST ..
 sudo docker run -d -p 80:6006 --cpus="1" \
             --memory="4g" \
             --network="bridge" \
-            --name="ps" \
-            --ip="172.17.0.3" \
+            --name="ps0" \
+            --ip="172.17.0.10" \
             --mount source=<location_on_server,target=<location_on_container>
 exec python mnist_replica.py --data_dir= \
-            --task_index= \
-            --replicas_to_aggregate= \
-            --hidden_units= \
-            --train_steps= \
-            --learning_rate= \
-            --sync_replicas= \
-            --existing_servers= \
-            --ps_hosts= \
-            --worker_hosts= \
-            --job_name="ps"
+            #--task_index= #\ no task index because ps vs. worker?
+            --sync_replicas="True"\
+            --ps_hosts="172.17.0.10:2222" \
+            --worker_hosts="172.17.0.100:2222, 172.17.0.101:2222, 172.17.0.102:2222" \
+            --job_name="ps0"
             
 # resources:
 # https://docs.docker.com/engine/admin/resource_constraints/#limit-a-containers-access-to-memory

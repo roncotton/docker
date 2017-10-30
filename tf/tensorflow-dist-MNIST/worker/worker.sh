@@ -28,23 +28,39 @@
 # worker_hosts --   [string] Comma-separated list of hostname:port pairs
 # job_name --       [string] job name: worker or ps
 sudo docker build -t tensorflow-dist-MNIST ..
-sudo docker run -d -p 80:6006 --cpus="1" \
+# note: only ps has data on 6006?
+sudo docker run -d \ 
+            --cpus="1" \
             --memory="4g" \
             --network="bridge" \
-            --name="ps" \
-            --ip="172.17.0.3" \
-            --mount source=<location_on_server,target=<location_on_container>
+            --name="worker0" \
+            --ip="172.17.0.100" \
+            --mount source=<location_on_server>,target=<location_on_container>
+sudo docker run -d \ 
+            --cpus="1" \
+            --memory="4g" \
+            --network="bridge" \
+            --name="worker1" \
+            --ip="172.17.0.101" \
+            --mount source=<location_on_server>,target=<location_on_container>
+sudo docker run -d \ 
+            --cpus="1" \
+            --memory="4g" \
+            --network="bridge" \
+            --name="worker2" \
+            --ip="172.17.0.102" \
+            --mount source=<location_on_server>,target=<location_on_container>
 exec python mnist_replica.py --data_dir= \
-            --task_index= \
-            --replicas_to_aggregate= \
-            --hidden_units= \
+            --task_index="0" \
+            # --replicas_to_aggregate= #\ default off
+            # --hidden_units= \
             --train_steps= \
-            --learning_rate= \
-            --sync_replicas= \
-            --existing_servers= \
-            --ps_hosts="172.17.0.3:50000" \
-            --worker_hosts=\
-            --job_name="ps"
+            #--learning_rate= #\ default .01
+            --sync_replicas="True" \   # avoid state gradients - default False
+            # --existing_servers= #\ default off
+            --ps_hosts="172.17.0.10:2222" \
+            --worker_hosts="172.17.0.100:2222, 172.17.0.101:2222, 172.17.0.102:2222" \
+            --job_name="ps0"
             
 # resources:
 # https://docs.docker.com/engine/admin/resource_constraints/#limit-a-containers-access-to-memory

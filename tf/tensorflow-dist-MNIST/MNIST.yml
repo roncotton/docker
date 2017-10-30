@@ -1,0 +1,28 @@
+version: '3'
+
+#networks:
+# using default docker0 network until a need to isolate network is required:
+# $ ifconfig
+#docker0   Link encap:Ethernet  HWaddr 02:42:47:bc:3a:eb
+#          inet addr:172.17.0.1  Bcast:0.0.0.0  Mask:255.255.0.0
+#          inet6 addr: fe80::42:47ff:febc:3aeb/64 Scope:Link
+# more info about network can be found by running the command:
+# $ docker network inspect bridge
+#   NOTE: future research might warrent the need to use docker_gwbridge or 
+#   Overlay networks in swarm mode
+
+services:
+    tensorflow:
+        build: .
+        ports:
+        - "5000:5000"
+        volumes:
+        - .:/code
+        - logvolume01:/var/log
+        links
+        - redis
+    redis:
+        image: redis
+    volumes:
+        logvolume01: {}
+        
